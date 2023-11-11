@@ -64,7 +64,7 @@ app.post('/added-stream', async (req, res) => {
     const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
 
 
-     const ffmpegProcess = spawn(ffmpegPath, ['-stream_loop', loop, '-re', '-i', filePath, 
+     const ffmpegProcess = spawn(ffmpegPath, ['-stream_loop', loop, '-re', '-i', videoPath, 
         '-c', 'copy',
         '-f', 'flv', urlkey,]);
 
