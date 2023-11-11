@@ -104,33 +104,34 @@ app.post('/added-stream', async (req, res) => {
      
   
     try {
-      const filePath = await path.join(__dirname, './videos/ok.mp4');
-      const videoPath = await "https://astream-server.vercel.app/video-live";
+      // // const filePath = await path.join(__dirname, './videos/ok.mp4');
+      // const videoPath = await "https://astream-server.vercel.app/video-live";
   
-      const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-246363178443448-0-AbzNhl9Dkqj2GHtF';
-      // const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
+      // const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-246363178443448-0-AbzNhl9Dkqj2GHtF';
+      // // const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
   
-       const ffmpegProcess = await spawn(ffmpegPath, ['-stream_loop', '-1', '-re', '-i', videoPath, 
-          '-c', 'copy',
-          '-f', 'flv', url,]);
+      //  const ffmpegProcess = await spawn(ffmpegPath, ['-stream_loop', '-1', '-re', '-i', videoPath, 
+      //     '-c', 'copy',
+      //     '-f', 'flv', url,]);
   
-          ffmpegProcess.stdout.on('data', (data) => {
-                console.log("fhuhuh", data.toString());
+      //     ffmpegProcess.stdout.on('data', (data) => {
+      //           console.log("fhuhuh", data.toString());
                  
-              });
-          ffmpegProcess.stderr.on('data', (data) => {
+      //         });
+      //     ffmpegProcess.stderr.on('data', (data) => {
             
-                console.log(data.toString());
-              });
-          ffmpegProcess.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-          });
-          // Handle errors
-          ffmpegProcess.on('error', (err) => {
-            res.send("spawning ffmpeg", err);
-              console.error(`Error spawning ffmpeg: ${err}`);
-          });
-          res.send({hi: "start stream"});
+      //           console.log(data.toString());
+      //         });
+      //     ffmpegProcess.on('close', (code) => {
+      //       console.log(`child process exited with code ${code}`);
+      //     });
+      //     // Handle errors
+      //     ffmpegProcess.on('error', (err) => {
+      //       res.send("spawning ffmpeg", err);
+      //         console.error(`Error spawning ffmpeg: ${err}`);
+      //     });
+      //     res.send({hi: "start stream"});
+      res.send({hhhhhh: 'gggggggg'})
     
      } catch (error) {
       res.send({hi: "error stream"}, error);
