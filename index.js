@@ -47,7 +47,7 @@ app.get('/video-live', async function(req, res){
 });
 
 
-app.post('/added-stream', async function(req, res) {
+app.post('/added-stream', async function (req, res) {
   const {fileurl, loop, urlkey} =req.body;
     console.log('huihuygygyug', fileurl, loop, urlkey);
 
@@ -89,7 +89,7 @@ app.post('/added-stream', async function(req, res) {
         res.send({hi: "hhhhhhh hgygygyg hgygyg"});
   
    } catch (error) {
-    res.send({hi: "hhhhhhh hgygygyg hgygyg"}, error);
+    res.send({hi: "hhhhhhh hgygygyg hgygyg", error});
      console.log(error);
    }
   
@@ -136,7 +136,7 @@ app.post('/added-stream', async function(req, res) {
       res.send({hhhhhh: 'gggggggg'})
     
      } catch (error) {
-      res.send({hi: "error stream"}, error);
+      res.send({hi: "error stream", error});
        console.log(error);
      }
     
