@@ -57,14 +57,14 @@ app.post('/added-stream', async (req, res) => {
    
 
   try {
-    const filePath = await path.join(__dirname, '/videos/ok.mp4');
-    const videoPath = "./videos/ok.mp4";
+    const filePath = await path.join(__dirname, './videos/ok.mp4');
+    const videoPath = await "./videos/ok.mp4";
 
     const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-246363178443448-0-AbzNhl9Dkqj2GHtF';
     const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
 
 
-     const ffmpegProcess = spawn(ffmpegPath, ['-stream_loop', loop, '-re', '-i', videoPath, 
+     const ffmpegProcess = await spawn(ffmpegPath, ['-stream_loop', loop, '-re', '-i', videoPath, 
         '-c', 'copy',
         '-f', 'flv', urlkey,]);
 
