@@ -81,11 +81,13 @@ app.post('/added-stream', async (req, res) => {
         });
         // Handle errors
         ffmpegProcess.on('error', (err) => {
+          res.send("spawning ffmpeg", err);
             console.error(`Error spawning ffmpeg: ${err}`);
         });
         res.send({hi: "hhhhhhh hgygygyg hgygyg"});
   
    } catch (error) {
+    res.send({hi: "hhhhhhh hgygygyg hgygyg"}, error);
      console.log(error);
    }
   
