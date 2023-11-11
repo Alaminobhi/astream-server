@@ -11,7 +11,7 @@ const ffmpegPath = require('ffmpeg-static');
 const httpServer = http.createServer(app);
 const path = require('path');
 
- 
+app.use(express.json());
 app.use(cors());
 
 app.get("/", function (req, res) {
@@ -47,20 +47,26 @@ app.get('/video-live', function(req, res){
 
 
 app.post('/added-stream', async (req, res) => {
-  console.log( "gygjhygygy", req.body);
+  const {fileurl, loop, urlkey} =req.body;
+    console.log('huihuygygyug', fileurl, loop, urlkey);
 
+  //   fs.readFile( __dirname + "/" + "videos/ok.mp4", 'utf8', function (err, data) {
+  //     console.log( data );
+  //     res.end( data );
+  //  });
+   
 
   try {
     const filePath = await path.join(__dirname, '/videos/ok.mp4');
     const videoPath = "./videos/ok.mp4";
 
-    const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-231542346605076-0-AbyE4AmCXITp4eKd';
+    const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-246363178443448-0-AbzNhl9Dkqj2GHtF';
     const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
 
 
-     const ffmpegProcess = spawn(ffmpegPath, ['-stream_loop', '-1', '-re', '-i', filePath, 
+     const ffmpegProcess = spawn(ffmpegPath, ['-stream_loop', loop, '-re', '-i', filePath, 
         '-c', 'copy',
-        '-f', 'flv', url,]);
+        '-f', 'flv', urlkey,]);
 
         ffmpegProcess.stdout.on('data', (data) => {
               console.log("fhuhuh", data.toString());
@@ -77,7 +83,7 @@ app.post('/added-stream', async (req, res) => {
         ffmpegProcess.on('error', (err) => {
             console.error(`Error spawning ffmpeg: ${err}`);
         });
-        res.send.json({hi: "hhhhhhh hgygygyg hgygyg"});
+        res.send({hi: "hhhhhhh hgygygyg hgygyg"});
   
    } catch (error) {
      console.log(error);
@@ -86,6 +92,10 @@ app.post('/added-stream', async (req, res) => {
   });
 
 const PORT = process.env.PORT || 5000;
-httpServer.listen(PORT, () => {
-  console.log(`Socket.io server is running on port ${PORT}`);
+var server = httpServer.listen(PORT, () => {
+  
+  var host = server.address().address
+  var port = server.address().port
+  console.log("Example app listening at http://%s:%s", host, port)
+  console.log(`server is running on port ${PORT}`);
 });
