@@ -53,7 +53,7 @@ app.post('/added-stream', async function (req, res) {
 
   //   fs.readFile( __dirname + "/" + "videos/ok.mp4", 'utf8', function (err, data) {
   //     console.log( data );
-  //     res.end( data );
+  //     res.end( data ); 
   //  });
    
 
@@ -132,11 +132,11 @@ app.post('/added-stream', async function (req, res) {
             // res.send("spawning ffmpeg", err);
               console.error(`Error spawning ffmpeg: ${err}`);
           });
-          res.send({hi: "start stream"});
+          res.statusText({hi: "start stream"});
       // res.send({hhhhhh: 'gggggggg'})
     
      } catch (error) {
-      res.send({hi: "error stream", error});
+      res.status({hi: "error stream", error});
        console.log(error);
      }
     
