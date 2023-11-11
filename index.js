@@ -18,14 +18,15 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.get('/video-live', function(req, res){
+app.get('/video-live', async function(req, res){
   
   const range = req.headers.range;
   if(!range){
       res.status(400).send("Requires Range header");
   }
   const video = 'https://www.youtube.com/watch?v=RLzC55ai0eo'; 
-  const videoPath = "./videos/ok.mp4";
+  // const videoPath = "./videos/ok.mp4";
+  const videoPath = await path.join(__dirname, './videos/ok.mp4');
   
   const videoSize = fs.statSync(videoPath).size;
   // console.log("size of video is:", videoSize);
@@ -46,7 +47,7 @@ app.get('/video-live', function(req, res){
 });
 
 
-app.post('/added-stream', async (req, res) => {
+app.post('/added-stream', async function(req, res) {
   const {fileurl, loop, urlkey} =req.body;
     console.log('huihuygygyug', fileurl, loop, urlkey);
 
@@ -94,7 +95,7 @@ app.post('/added-stream', async (req, res) => {
   
   });
 
-  app.get('/added-stream2', async (req, res) => {
+  app.get('/added-stream2', async function (req, res) {
     // const {fileurl, loop, urlkey} =req.body;
     //   console.log('huihuygygyug', fileurl, loop, urlkey);
   
