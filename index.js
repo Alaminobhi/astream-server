@@ -93,7 +93,7 @@ app.post('/added-stream', async (req, res) => {
   
   });
 
-  app.get('/added-stream', async (req, res) => {
+  app.get('/added-stream2', async (req, res) => {
     const {fileurl, loop, urlkey} =req.body;
       console.log('huihuygygyug', fileurl, loop, urlkey);
   
@@ -110,14 +110,13 @@ app.post('/added-stream', async (req, res) => {
       const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-246363178443448-0-AbzNhl9Dkqj2GHtF';
       const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
   
-  
-       const ffmpegProcess = await spawn(ffmpegPath, ['-stream_loop', loop, '-re', '-i', videoPath, 
+       const ffmpegProcess = await spawn(ffmpegPath, ['-stream_loop', '-1', '-re', '-i', filePath, 
           '-c', 'copy',
-          '-f', 'flv', urlkey,]);
+          '-f', 'flv', url,]);
   
           ffmpegProcess.stdout.on('data', (data) => {
                 console.log("fhuhuh", data.toString());
-                
+                 
               });
           ffmpegProcess.stderr.on('data', (data) => {
             
