@@ -1,149 +1,65 @@
 const express = require('express');
 const app = express();
 const http = require("http");
-
+// const {Server} = require("uws");
+const bodyParser = require('body-parser');
 const cors = require("cors");
-const spawn = require('child_process').spawn;
-const fs = require('fs');
-
+const {routers} = require('./router');
+const NodeMediaServer = require('node-media-server');
 const ffmpegPath = require('ffmpeg-static');
+const os = require('os');
+const cluster = require('cluster');
+const { exit } = require('process');
+const cpuNums = os.cpus().length
 
-const httpServer = http.createServer(app);
-const path = require('path');
 
-app.use(express.json());
-app.use(cors());
+app.server = http.createServer(app);
+// app.wss = new Server({server: app.server});
 
-app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/index.html");
-});
 
-app.get('/video-live', async function(req, res){
-  
-  const range = req.headers.range;
-  if(!range){
-      res.status(400).send("Requires Range header");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(cors({exposedHeaders: '*'}));
+// app.wss.on('connection', (ws) => {
+//   console.log();
+// })
+app.routers = routers(app);
+
+
+
+
+const config = {
+  rtmp: {
+    port: 1935,
+    chunk_size: 60000,
+    gop_cache: true,
+    ping: 30,
+    ping_timeout: 60
+  },
+  http: {
+    port: 8000,
+    allow_origin: '*'
+  },
+  relay: {
+    ffmpeg: ffmpegPath,
+    tasks: [
+      {
+        app: 'live',
+        mode: 'push',
+        edge: 'rtmps://live-api-s.facebook.com:443/rtmp/FB-239969042429073-0-AbzreEAxwYFPsX18',
+      }
+    ]
   }
-  const video = 'https://www.youtube.com/watch?v=RLzC55ai0eo'; 
-  // const videoPath = "./videos/ok.mp4";
-  const videoPath = await path.join(__dirname, './videos/ok.mp4');
-  
-  const videoSize = fs.statSync(videoPath).size;
-  // console.log("size of video is:", videoSize);
-  const CHUNK_SIZE = 10**6; //1 MB
-  const start = Number(range.replace(/\D/g, "")); 
-  const end = Math.min(start + CHUNK_SIZE , videoSize-1);
-  const contentLength = end-start+1;
-  const headers = {
-      "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-      "Accept-Ranges": 'bytes',
-      "Content-Length": contentLength,
-      "Content-Type": "video/mp4"
-  }
-  res.writeHead(206,headers);
-  const videoStream = fs.createReadStream(videoPath, {start, end});
-  videoStream.pipe(res);
+};
 
-});
+var nms = new NodeMediaServer(config)
+nms.run();
 
-
-app.post('/added-stream', async function (req, res) {
-  const {fileurl, loop, urlkey} =req.body;
-    console.log('huihuygygyug', fileurl, loop, urlkey);
-
-  //   fs.readFile( __dirname + "/" + "videos/ok.mp4", 'utf8', function (err, data) {
-  //     console.log( data );
-  //     res.end( data ); 
-  //  });
-   
-
-  try {
-    // const filePath = await path.join(__dirname, './videos/ok.mp4');
-    // const videoPath = await "./videos/ok.mp4";
-    const videoPath = await "https://astream-server.vercel.app/video-live";
-
-    const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-246363178443448-0-AbzNhl9Dkqj2GHtF';
-    const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
-
-
-     const ffmpegProcess = await spawn(ffmpegPath, ['-stream_loop', loop, '-re', '-i', videoPath, 
-        '-c', 'copy',
-        '-f', 'flv', urlkey,]);
-
-        ffmpegProcess.stdout.on('data', (data) => {
-              console.log("fhuhuh", data.toString());
-              
-            });
-        ffmpegProcess.stderr.on('data', (data) => {
-          
-              console.log(data.toString());
-            });
-        ffmpegProcess.on('close', (code) => {
-          console.log(`child process exited with code ${code}`);
-        });
-        // Handle errors
-        ffmpegProcess.on('error', (err) => {
-          res.send("spawning ffmpeg", err);
-            console.error(`Error spawning ffmpeg: ${err}`);
-        });
-        res.send({hi: "hhhhhhh hgygygyg hgygyg"});
-   
-   } catch (error) {
-    res.send({hi: "hhhhhhh hgygygyg hgygyg", error});
-     console.log(error);
-   }
-  
-  });
-
-  app.get('/added-stream2', async function (req, res) {
-    // const {fileurl, loop, urlkey} =req.body;
-    //   console.log('huihuygygyug', fileurl, loop, urlkey);
-  
-    //   fs.readFile( __dirname + "/" + "videos/ok.mp4", 'utf8', function (err, data) {
-    //     console.log( data );
-    //     res.end( data );
-    //  });
-     
-   
-    try {
-      const filePath = await path.join(__dirname, './videos/ok.mp4');
-      // const videoPath = await "https://astream-server.vercel.app/video-live";
-  
-      const url ='rtmps://live-api-s.facebook.com:443/rtmp/FB-246363178443448-0-AbzNhl9Dkqj2GHtF';
-      // const url1 ='FB-231542346605076-0-AbyE4AmCXITp4eKd';
-  
-       const ffmpegProcess = await spawn(ffmpegPath, ['-stream_loop', '-1', '-re', '-i', filePath, 
-          '-c', 'copy',
-          '-f', 'flv', url,]);
-  
-          ffmpegProcess.stdout.on('data', (data) => {
-                console.log("fhuhuh", data.toString());
-                 
-              });
-          ffmpegProcess.stderr.on('data', (data) => {
-            
-                console.log(data.toString());
-              });
-          ffmpegProcess.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-          });
-          // Handle errors
-          ffmpegProcess.on('error', (err) => {
-            // res.send("spawning ffmpeg", err);
-              console.error(`Error spawning ffmpeg: ${err}`);
-          });
-          res.statusText({hi: "start stream"});
-      // res.send({hhhhhh: 'gggggggg'})
-    
-     } catch (error) {
-      res.status({hi: "error stream", error});
-       console.log(error);
-     }
-    
-    });
+ 
 
 const PORT = process.env.PORT || 5000;
-var server = httpServer.listen(PORT, () => {
+var server = app.server.listen(PORT, () => {
   
   var host = server.address().address
   var port = server.address().port
