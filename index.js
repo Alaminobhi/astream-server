@@ -21,7 +21,7 @@ app.server = http.createServer(app);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+connectToDB();
 app.use(cors({exposedHeaders: '*'}));
 // app.wss.on('connection', (ws) => {
 //   console.log();
@@ -30,7 +30,9 @@ app.use(cors({exposedHeaders: '*'}));
 app.use("/api/v1/media", mediaRoutes);
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-connectToDB();
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + "/index.html");
+});
 
 app.routers = routers(app);
 
