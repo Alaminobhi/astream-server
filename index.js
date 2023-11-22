@@ -23,7 +23,7 @@ app.use(cors({exposedHeaders: '*'}));
 // })
 
 app.use("/api/v1/media", mediaRoutes);
-app.use("/public", express.static(path.join(__dirname, "public")));
+// app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/index.html");
