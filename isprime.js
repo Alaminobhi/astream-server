@@ -1,5 +1,4 @@
 const spawn = require('child_process').spawn;
-const fs = require('fs');
 const path = require('path');
 const ffmpegPath = require('ffmpeg-static');
 
