@@ -8,11 +8,6 @@ const {Worker} = require('worker_threads');
 
 exports.routers = (app) => {
 
-    app.get("/", function (req, res) {
-        res.sendFile(__dirname + "/index.html");
-        const videoPath = path.join(__dirname, '/videos/ok.mp4');
-        console.log(videoPath);
-      });
 
       app.get("/worker", function (req, res) {
         let worker = new Worker('./worker.js');
