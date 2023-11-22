@@ -19,7 +19,8 @@ function isPrime(message) {
     let isPrime = true;
     
     try {
-        const videoPath = path.join(__dirname, './videos/ok.mp4');
+        const videoPath = path.join(__dirname, fileurl);
+        // const videoPath = 'D:/Web Development/NEXT JS ALL APPS/a-stream-server/videos/ok.mp4';
     
         const controller = new AbortController();
         const { signal } = controller;

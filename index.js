@@ -10,12 +10,14 @@ const ffmpegPath = require('ffmpeg-static');
 const os = require('os');
 const cluster = require('cluster');
 const { exit } = require('process');
-const cpuNums = os.cpus().length
-
+const cpuNums = os.cpus().length;
+const mediaRoutes = require("./routes/media");
+const mongoose = require("mongoose");
+const path = require("path");
+const connectToDB = require('./utils/database')
 
 app.server = http.createServer(app);
 // app.wss = new Server({server: app.server});
-
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -24,10 +26,13 @@ app.use(cors({exposedHeaders: '*'}));
 // app.wss.on('connection', (ws) => {
 //   console.log();
 // })
+
+app.use("/api/v1/media", mediaRoutes);
+app.use("/public", express.static(path.join(__dirname, "public")));
+
+connectToDB();
+
 app.routers = routers(app);
-
-
-
 
 const config = {
   rtmp: {
@@ -41,16 +46,16 @@ const config = {
     port: 8000,
     allow_origin: '*'
   },
-  relay: {
-    ffmpeg: ffmpegPath,
-    tasks: [
-      {
-        app: 'live',
-        mode: 'push',
-        edge: 'rtmps://live-api-s.facebook.com:443/rtmp/FB-239969042429073-0-AbzreEAxwYFPsX18',
-      }
-    ]
-  }
+  // relay: {
+  //   ffmpeg: ffmpegPath,
+  //   tasks: [
+  //     {
+  //       app: 'live',
+  //       mode: 'push',
+  //       edge: 'rtmps://live-api-s.facebook.com:443/rtmp/FB-239969042429073-0-AbzreEAxwYFPsX18',
+  //     }
+  //   ]
+  // }
 };
 
 var nms = new NodeMediaServer(config)
@@ -63,6 +68,6 @@ var server = app.server.listen(PORT, () => {
   
   var host = server.address().address
   var port = server.address().port
-  console.log("Example app listening at http://%s:%s", host, port)
+  console.log("Example app listening at", host, port)
   console.log(`server is running on port ${PORT}`);
 });
