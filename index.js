@@ -4,7 +4,6 @@ const http = require("http");
 // const {Server} = require("uws");
 const bodyParser = require('body-parser');
 const cors = require("cors");
-const NodeMediaServer = require('node-media-server');
 const mediaRoutes = require("./routes/media");
 const path = require("path");
 const connectToDB = require('./utils/database');
