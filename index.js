@@ -68,32 +68,32 @@ app.get('/video-live', async function(req, res){
 
 // app.routers = routers(app);
 
-const config = {
-  rtmp: {
-    port: 1935,
-    chunk_size: 60000,
-    gop_cache: true,
-    ping: 30,
-    ping_timeout: 60
-  },
-  http: {
-    port: 8000,
-    allow_origin: '*'
-  },
-  // relay: {
-  //   ffmpeg: ffmpegPath,
-  //   tasks: [
-  //     {
-  //       app: 'live',
-  //       mode: 'push',
-  //       edge: 'rtmps://live-api-s.facebook.com:443/rtmp/FB-239969042429073-0-AbzreEAxwYFPsX18',
-  //     }
-  //   ]
-  // }
-};
+// const config = {
+//   rtmp: {
+//     port: 1935,
+//     chunk_size: 60000,
+//     gop_cache: true,
+//     ping: 30,
+//     ping_timeout: 60
+//   },
+//   http: {
+//     port: 8000,
+//     allow_origin: '*'
+//   },
+//   // relay: {
+//   //   ffmpeg: ffmpegPath,
+//   //   tasks: [
+//   //     {
+//   //       app: 'live',
+//   //       mode: 'push',
+//   //       edge: 'rtmps://live-api-s.facebook.com:443/rtmp/FB-239969042429073-0-AbzreEAxwYFPsX18',
+//   //     }
+//   //   ]
+//   // }
+// };
 
-var nms = new NodeMediaServer(config)
-nms.run();
+// var nms = new NodeMediaServer(config)
+// nms.run();
 
  
 
