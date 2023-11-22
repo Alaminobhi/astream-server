@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
 const http = require("http");
-// const {Server} = require("uws");
+
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const mediaRoutes = require("./routes/media");
 const path = require("path");
 const connectToDB = require('./utils/database');
+const {routers} = require('./router')
 const fs = require('fs');
 const {fork} = require("child_process") 
 
@@ -19,53 +20,13 @@ connectToDB();
 app.use(cors({exposedHeaders: '*'}));
 // app.wss.on('connection', (ws) => {
 //   console.log();
-// })
+// }) 
 
 app.use("/api/v1/media", mediaRoutes);
-// app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/public", express.static(path.join(__dirname, "public")));
 
-app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/index.html");
-});
 
-app.post("/isprime", (req, res) => {
-    
-  const childProcess = fork('./isprime.js');
-  childProcess.send(req.body)
-  childProcess.on("message", (data) => {
-    res.status(200).json({hhhhh: 'gggg', ffff: 'fffff'})
-  })
-});
-
-app.get('/video-live', async function(req, res){
-  
-  const range = req.headers.range;
-  if(!range){
-      res.status(400).send("Requires Range header");
-  }
-  const video = 'https://www.youtube.com/watch?v=RLzC55ai0eo'; 
-  // const videoPath = "./videos/ok.mp4";
-  const videoPath = await path.join(__dirname, './videos/ok.mp4');
-  
-  const videoSize = fs.statSync(videoPath).size;
-  // console.log("size of video is:", videoSize);
-  const CHUNK_SIZE = 10**6; //1 MB
-  const start = Number(range.replace(/\D/g, "")); 
-  const end = Math.min(start + CHUNK_SIZE , videoSize-1);
-  const contentLength = end-start+1;
-  const headers = {
-      "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-      "Accept-Ranges": 'bytes',
-      "Content-Length": contentLength,
-      "Content-Type": "video/mp4"
-  }
-  res.writeHead(206,headers);
-  const videoStream = fs.createReadStream(videoPath, {start, end});
-  videoStream.pipe(res);
-
-});
-
-// app.routers = routers(app);
+app.routers = routers(app);
 
 // const config = {
 //   rtmp: {

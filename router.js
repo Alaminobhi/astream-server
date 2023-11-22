@@ -8,18 +8,21 @@ const {Worker} = require('worker_threads');
 
 exports.routers = (app) => {
 
+  app.get("/", function (req, res) {
+    res.sendFile(__dirname + "/index.html");
+  });
+  
+    app.get("/worker", function (req, res) {
+      let worker = new Worker('./worker.js');
 
-      app.get("/worker", function (req, res) {
-        let worker = new Worker('./worker.js');
+      worker.send()
 
-        worker.send()
+      worker.on('message', (data)=>{
+        res.status(200).json({data});
 
-        worker.on('message', (data)=>{
-          res.status(200).json({data});
-
-        })
-        
-      });
+      })
+      
+    });
 
 
       app.post("/isprime", (req, res) => {
