@@ -31,7 +31,7 @@ exports.routers = (app) => {
         const childProcess = fork('./isprime.js');
         childProcess.send(req.query)
         childProcess.on("message", (data) => {
-          res.status(200).json({hhhhh: 'gggg', ffff: 'fffff'})
+          res.status(200).json(data);
         })
       });
       

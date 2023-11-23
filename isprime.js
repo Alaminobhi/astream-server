@@ -55,13 +55,12 @@ function isPrime(message) {
       
       catch (error) {
         console.log('hhhhhh', error);
+        return {error}
       }
 
 
     return {
-        "number" : 1,
-        "isPrime": isPrime,
-        "time": endTime.getTime() - startTime.getTime()
+      livestatus: "Start Live Stream", videourl: 'live'
         }
 
 }
