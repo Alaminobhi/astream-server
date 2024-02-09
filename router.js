@@ -5,6 +5,8 @@ const ffmpegPath = require('ffmpeg-static');
 const {fork} = require("child_process") 
 const {Worker} = require('worker_threads');
 
+const ytdl = require('ytdl-core');
+const axios = require('axios');
 
 exports.routers = (app) => {
 
@@ -25,7 +27,7 @@ exports.routers = (app) => {
     });
 
 
-      app.get("/isprime", (req, res) => {
+      app.get("/livestream", (req, res) => {
     
         console.log(req.query);
         const childProcess = fork('./isprime.js');
@@ -33,6 +35,75 @@ exports.routers = (app) => {
         childProcess.on("message", (data) => {
           res.status(200).json(data);
         })
+
+      });
+
+      app.get("/alldownload", (req, res) => {
+
+        const childProcess = fork('./downloader.js');
+        childProcess.send(req.query)
+        childProcess.on("message", (data) => {
+          res.status(200).json(data);
+        })
+
+      });
+
+      app.get("/texttomp3", (req, res) => {
+
+        const childProcess = fork('./texttomp3.js');
+        childProcess.send(req.query)
+        childProcess.on("message", (data) => {
+          res.status(200).json(data);
+        })
+
+      });
+
+      app.get("/ffmpegvideo", (req, res) => {
+
+        const childProcess = fork('./encoder.js');
+        childProcess.send(req.query)
+        childProcess.on("message", (data) => {
+          res.status(200).json(data);
+        })
+
+      });
+
+      app.get("/videolist", (req, res) => {
+        const videoPath = path.join(__dirname,'videos');
+    
+        fs.readdir(videoPath,(err,items)=>{
+
+          res.status(200).json(items);
+         
+        });
+
+        
+
+        
+      });
+
+
+      app.get("/fbdown", async (req, res) => {
+        const filename = req.query.filename;
+        const urllink = req.query.urllink;
+        const videoPath = path.join(__dirname,'videos', filename);
+    
+        console.log(req.query);
+        try {
+          const response = await axios.get(urllink, { responseType: 'stream' });
+          const writeStream = fs.createWriteStream(videoPath);
+          response.data.pipe(writeStream);
+          await new Promise((resolve, reject) => {
+            writeStream.on('finish', resolve);
+            writeStream.on('error', reject);
+          });
+          res.status(200).json('done');
+          console.log('Video downloaded successfully!');
+        } catch (error) {
+          console.error('Error downloading video:', error);
+        }
+
+        
       });
       
       app.get('/video-live', async function(req, res){
@@ -43,7 +114,7 @@ exports.routers = (app) => {
         }
         const video = 'https://www.youtube.com/watch?v=RLzC55ai0eo'; 
         // const videoPath = "./videos/ok.mp4";
-        const videoPath = await path.join(__dirname, './videos/ok.mp4');
+        const videoPath = await path.join(__dirname, './videos/bplads.mp4');
         
         const videoSize = fs.statSync(videoPath).size;
         // console.log("size of video is:", videoSize);

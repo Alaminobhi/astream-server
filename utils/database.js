@@ -19,8 +19,8 @@ const connectToDB = async () => {
     try {
         await mongoose.connect(uri, {
             dbName: "hisab-nikash",
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+            // useNewUrlParser: true,
+            // useUnifiedTopology: true,
         })
 
 

@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
   if (Array.isArray(req.files.videos) && req.files.videos.length > 0) {
     for (let video of req.files.videos) {
       let bass = path.basename(video.path)
-      videosPaths.push("public/videos/" + bass);
+      videosPaths.push("videos/" + bass);
     }
   }
 

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ObhiStream Server</title>
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    <style>
+      body {
+        margin: 40px auto;
+        max-width: 650px;
+        line-height: 1.6;
+        font-size: 18px;
+        font-family: "Courier New", Courier, monospace;
+        color: #444;
+        padding: 0 10px;
+      }
+      h2 {
+        line-height: 1.2;
+      }
+    </style>
+  </head>
+ 
+  <body>
+    <h2>HTTP Video Streaming</h2>
+
+
+    <form id="contact-form">
+
+      <label>file url link:
+        <input 
+        id="fileurl"
+            type="text" 
+            name={fileurl} 
+            placeholder="file url link"
+            required
+          />
+        </label>
+        <br/>
+        <label> Loops:
+          <select id="loop" name={loop} required>
+            <option value="">No Loop</option>
+            <option value="2">Loop 2</option>
+            <option value="-1">Looping</option>
+          </select>
+        </label>
+        <br/>
+        <label> Live In:
+          <select
+          id="url" name={url} required>
+          <option value="">twith</option>
+            <option value="rtmps://live-api-s.facebook.com:443/rtmp">Facebook</option>
+            <option value="rtmp://a.rtmp.youtube.com/live2">Youtube</option>
+            <option value="rtmp://localhost:1935/live">node live</option>
+          </select>
+        </label>
+        <br/>
+        <label> Live Key:
+          <input 
+          id="key"
+            type="text" 
+            name={key} 
+            placeholder="Live Key"
+            required
+          />
+        </label>
+        <br/>
+
+      <button type="submit">Submit</button>
+  </form>
+
+  
+<h1>YouTube Video Download</h1>
+<form id="download-form">
+
+  <label>url link:
+    <input 
+    id="link"
+        type="text" 
+        name={link} 
+        placeholder="url link"
+        required
+      />
+    </label>
+    <br/>
+    
+    <label> File name:
+      <input 
+          id="filename"
+          type="text" 
+          name={filename} 
+          placeholder="File Name"
+          required
+        />
+    </label>
+    <br/>
+    <label> format off from:
+      <select
+      id="format" name={format} required>
+      <option value=".vtt">Audio to vtt</option>
+      <option value=".mp4">yt Video</option>
+        <option value=".mp3">yt Audio</option>
+        <option value=".mp4">fb Video</option>
+        <option value=".mp3">fb Audio</option>
+      </select>
+    </label>
+    <br/>
+    
+  <button type="submit">Submit</button>
+</form>
+
+<ul id="list">
+</ul>
+
+  <script>
+
+
+document.getElementById("contact-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    // const name = document.getElementById("name").value;
+    // const email = document.getElementById("email").value;
+
+    const fileurl = document.getElementById("fileurl").value;
+    const loop = document.getElementById("loop").value;
+    const url = document.getElementById("url").value;
+    const key = document.getElementById("key").value;
+
+    const rtmp = `${url}/${key}`;
+
+    const data = {
+        fileurl: fileurl,
+        loop: loop,
+        rtmp: rtmp
+    };
+
+    console.log(data);
+
+
+    startstream(data);
+
+});
+
+
+const startstream = async (data) => {
+      
+      try {
+      let url = new URL('http://localhost:5000/livestream');
+      url.search = new URLSearchParams(data);
+
+      const response = await fetch(url);
+      const data2 = await response.json();
+      console.log(data2);
+        if (response.ok) {
+            alert('done properly');
+           
+            // location.reload()
+        }
+
+
+    }
+
+    catch (error) {
+        console.log(error)
+      alert('errr properly', error); 
+       
+    }
+      }
+
+
+//download
+
+
+document.getElementById("download-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    // const name = document.getElementById("name").value;
+    // const email = document.getElementById("email").value;
+
+    const filename = document.getElementById("filename").value;
+    const format = document.getElementById("format").value;
+    const link = document.getElementById("link").value;
+
+
+    const datalink = {
+        filename: filename,
+        urllink: link,
+        format: format
+    };
+
+    console.log(datalink);
+
+
+    startdown(datalink);
+
+});
+
+
+const startdown = async (datalink) => {
+      
+      try {
+      let url = new URL('http://localhost:5000/alldownload');
+      url.search = new URLSearchParams(datalink);
+
+      const response = await fetch(url);
+      const datalink2 = await response.json();
+      console.log(datalink2);
+        if (response.ok) {
+            alert('done properly');
+           
+            // location.reload()
+        }
+
+
+    }
+
+    catch (error) {
+        console.log(error)
+      alert('errr properly', error); 
+       
+    }
+      }
+
+  </script>
+
+
+<ul id="myList"></ul>
+ 
+<script>
+
+let url = new URL('http://localhost:5000/videolist');
+
+async function logMovies(url) {
+  const response = await fetch(url);
+  const movies = await response.json();
+  console.log(movies);
+// return movies;
+let list =
+        document.getElementById("myList");
+
+        movies.forEach((item) => {
+        let li =
+            document.createElement("li");
+        li.innerText = item;
+
+        list.appendChild(li);
+    });
+}
+
+const data = logMovies(url);
+    // let data = ["Ram", "Shyam",
+    //     "Sita", "Gita"];
+    
+</script>
+
+<h1>DASH Video Player</h1>
+  <div>
+    <video data-dashjs-player autoplay controls>
+      <source src="output_dash/output.mpd" type="application/dash+xml">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+    <p>This video is 1MB and is being streamed</p>
+    
+    <video id="videoPlayer" width="650" controls muted="muted" loop>
+      <source src="/video-live" type="video/mp4" />
+    </video>
+  </body>
+</html>

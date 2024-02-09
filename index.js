@@ -21,7 +21,7 @@ app.use(cors({exposedHeaders: '*'}));
 // app.wss.on('connection', (ws) => {
 //   console.log();
 // }) 
-
+app.use(express.static('output_dash'));
 app.use("/api/v1/media", mediaRoutes);
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -60,8 +60,8 @@ app.routers = routers(app);
 const PORT = process.env.PORT || 5000;
 var server = app.server.listen(PORT, () => {
   
-  var host = server.address().address
-  var port = server.address().port
-  console.log("Example app listening at", host, port)
+  // var host = server.address().address
+  // var port = server.address().port
+  // console.log("Example app listening at", host, port)
   console.log(`server is running on port ${PORT}`);
 });
