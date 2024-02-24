@@ -171,7 +171,7 @@ document.getElementById("contact-form").addEventListener("submit", (event) => {
 const startstream = async (data) => {
       
       try {
-      let url = new URL('http://localhost:5000/livestream');
+      let url = new URL('http://103.191.50.22/livestream');
       url.search = new URLSearchParams(data);
 
       const response = await fetch(url);
@@ -225,7 +225,7 @@ document.getElementById("download-form").addEventListener("submit", (event) => {
 const startdown = async (datalink) => {
       
       try {
-      let url = new URL('http://localhost:5000/alldownload');
+      let url = new URL('http://103.191.50.22/alldownload');
       url.search = new URLSearchParams(datalink);
 
       const response = await fetch(url);
@@ -254,7 +254,7 @@ const startdown = async (datalink) => {
  
 <script>
 
-let url = new URL('http://localhost:5000/videolist');
+let url = new URL('http://103.191.50.22/videolist');
 
 async function logMovies(url) {
   const response = await fetch(url);
